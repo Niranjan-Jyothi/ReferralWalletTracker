@@ -30,7 +30,8 @@ def LoadAndShowDb():
     counterMy = counterMy + 1
     st.write(df)
 
-LoadAndShowDb()
+#LoadAndShowDb()
+
 
 # @st.cache_data(ttl=600)
 # def Load(query):
@@ -42,6 +43,11 @@ LoadAndShowDb()
 # rows = run_query(f'SELECT * FROM "{sheet_url}"')
 
 def AddCustomerRecord(customer: Customer):
-    nextItemId = len(workSheet.col_values(1))
-    workSheet.append_row([nextItemId, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion])
-    LoadAndShowDb()
+    # nextItemId = len(workSheet.col_values(1))
+    workSheet.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.Referrer])
+    #LoadAndShowDb()
+
+def GetAllCustomerRecord():
+    return workSheet.get_all_records()
+
+    

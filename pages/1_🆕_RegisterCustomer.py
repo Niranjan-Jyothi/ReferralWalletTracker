@@ -27,29 +27,59 @@ def ValidateCustomerFormData() -> bool:
         errors+=1
 
     if IsStringEmptyOrWhiteSpace(PhoneNumber) or not IsValidPhoneNumber(PhoneNumber):
-        st.sidebar.error("Please provide Valid Phone number") 
+        st.sidebar.error("Please provide Valid Customer Phone number") 
         errors+=1
 
-    if IsStringEmptyOrWhiteSpace(PhoneNumber) or not IsValidEmail(Email):
+    if IsStringEmptyOrWhiteSpace(Email) or not IsValidEmail(Email):
         st.sidebar.error("Please provide Valid Email Id")   
         errors+=1
+    
+    if not IsStringEmptyOrWhiteSpace(Referrer):
+        
+        if Referrer.isnumeric() and not IsValidPhoneNumber(Referrer):
+            st.sidebar.error("Please provide Valid Referrer Phone number") 
+            errors+=1
+
+        elif not Referrer.isnumeric() and not IsValidEmail(Referrer):
+            st.sidebar.error("Please provide Valid Referrer Email/Phone number") 
+            errors+=1
 
     return True if errors <= 0 else False
 
 def RegisterCustomer(): 
     if ValidateCustomerFormData():
+
         customer = Customer(
-            Name, PhoneNumber, Email, SpecialOccasion, Gender
+            Name, PhoneNumber, Email, SpecialOccasion, Gender, 0, Referrer
         )
-        # st.write(customer.Name)
-        # st.write(customer.Email)
-        # st.write(customer.PhoneNumber)
-        # st.write(customer.SpecialOccasion)
-        # st.write(customer.Gender)
-        # st.write(customer.RegisteredAt)
-        # st.write(customer.Wallet)
-        CustomerRecordService.AddCustomerRecord(customer)
-        st.sidebar.success("Customer Registered!")  
+
+        allCustomerRecords = CustomerRecordService.GetAllCustomerRecord()
+        highestCustomerId = 0
+        errors = 0
+        referrerFound = False
+
+        for record in allCustomerRecords:
+            highestCustomerId = max(highestCustomerId, record["Id"])
+
+            if str(record["PhoneNumber"]) == customer.PhoneNumber:
+                st.sidebar.error(f"Customer Phone number {customer.PhoneNumber} already in Use.")
+                errors += 1
+            
+            if record["Email"] == customer.Email:
+                st.sidebar.error(f"Customer Email {customer.Email} already in Use.")
+                errors += 1
+            
+            if customer.Referrer is not None and (customer.Referrer == record["Email"] or customer.Referrer == str(record["PhoneNumber"])):
+                referrerFound = True
+        
+        if customer.Referrer is not None and customer.Referrer.strip() is not "" and referrerFound is not True:
+            st.sidebar.error(f"Provided Referrer does not exist.")
+            errors += 1
+
+        if errors == 0:
+            customer.Id = highestCustomerId + 1
+            CustomerRecordService.AddCustomerRecord(customer)
+            st.sidebar.success("Customer Registered!")  
 
 
 #UI Form to accept Customer Data
@@ -59,6 +89,7 @@ with st.form(key = Constants.CustomerRegisterFormKey):
     Email = st.text_input(label = "Enter the Customer email")
     SpecialOccasion = st.date_input(label = "Provide a special occasion for customer")
     Gender = st.selectbox("Provide the Customer gender", ("Male", "Female", "Others"))
+    Referrer = st.text_input(label = "Enter the Referrer registered Email OR Phone Number (Optional)")
     Submit = st.form_submit_button(label = "Register Customer")
 
 if Submit:

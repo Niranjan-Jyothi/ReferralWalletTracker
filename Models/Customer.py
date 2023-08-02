@@ -4,7 +4,7 @@ import Constants
 class Customer:
     """ A class representing a customer. """
 
-    def __init__(self, name, phoneNumber, email, specialOccasion, gender, wallet = 0):
+    def __init__(self, name, phoneNumber, email, specialOccasion, gender, wallet = 0, referrer = None):
         self.Name: str = name
         self.PhoneNumber: int = phoneNumber
         self.Email: str = email
@@ -12,3 +12,5 @@ class Customer:
         self.Gender = gender
         self.Wallet: int = wallet
         self.RegisteredAt: date = date.today().strftime(Constants.DateTimeFormat)
+        self.Referrer = referrer
+        self.Id = 0

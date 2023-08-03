@@ -50,4 +50,16 @@ def AddCustomerRecord(customer: Customer):
 def GetAllCustomerRecord():
     return workSheet.get_all_records()
 
+#Hard matches an item on the entire sheet and returns the row in which it is found
+def FindCustomerIdByItem(searchItem: str) -> int:
+    cell = workSheet.find(searchItem)
+    return -1 if cell is None else cell.row
+
+#Pass in the row Id, to get the respective customer details
+def FindCustomerByRowId(row: int):
+    return workSheet.row_values(row)
+
+def DeleteCustomerByRowId(row: int):
+    workSheet.delete_row(row)
+
     

@@ -1,10 +1,12 @@
 from Models.Customer import Customer
+from Models.WalletRecord import WalletRecord
 from google.oauth2 import service_account
 import streamlit as st
-from gspread_pandas import Spread, Client
-import pyparsing
+from gspread_pandas import Client
 from pandas import DataFrame
 import Constants
+import pyparsing
+# from gspread_pandas import Spread
 
 # Create a Google Authentication connection object
 scope = ['https://spreadsheets.google.com/feeds',
@@ -19,47 +21,52 @@ client = Client(scope=scope,creds=credentials)
 
 sh = client.open(Constants.GoogleSheetDbName)
 
-workSheet = sh.worksheet(Constants.CustomerSpreadSheetName)
+"""""""""""""""Providers for CustomerRecord sheet"""""""""""""""""""""""""""""""""""""""""""""""
 
-counterMy = 0
-@st.cache_data(ttl=10)
+workSheetCustomerRecord = sh.worksheet(Constants.CustomerSpreadSheetName)
+
 def LoadAndShowDb():
-    global counterMy
-    df = DataFrame(workSheet.get_all_records())
-    st.write(counterMy)
-    counterMy = counterMy + 1
+    df = DataFrame(workSheetCustomerRecord.get_all_records())
     st.write(df)
 
 #LoadAndShowDb()
 
-
-# @st.cache_data(ttl=600)
-# def Load(query):
-#     rows = conn.execute(query, headers=1)
-#     rows = rows.fetchall()
-#     return rows
-
-# sheet_url = st.secrets["private_gsheets_url"]
-# rows = run_query(f'SELECT * FROM "{sheet_url}"')
-
 def AddCustomerRecord(customer: Customer):
     # nextItemId = len(workSheet.col_values(1))
-    workSheet.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.Referrer])
+    workSheetCustomerRecord.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.Referrer])
     #LoadAndShowDb()
 
 def GetAllCustomerRecord():
-    return workSheet.get_all_records()
+    return workSheetCustomerRecord.get_all_records()
 
 #Hard matches an item on the entire sheet and returns the row in which it is found
 def FindCustomerIdByItem(searchItem: str) -> int:
-    cell = workSheet.find(searchItem)
+    cell = workSheetCustomerRecord.find(searchItem)
     return -1 if cell is None else cell.row
 
 #Pass in the row Id, to get the respective customer details
 def FindCustomerByRowId(row: int):
-    return workSheet.row_values(row)
+    if row > 1:
+        return workSheetCustomerRecord.row_values(row)
 
 def DeleteCustomerByRowId(row: int):
-    workSheet.delete_row(row)
+    if row > 2:
+        workSheetCustomerRecord.delete_row(row)
 
-    
+def UpdateCustomerWallet(amount: int, row: int, column: int):
+    if row > 1 and column == Constants.CustomerRecordColumnNumberWallet:
+        workSheetCustomerRecord.update_cell(row, column, amount)
+
+
+
+
+"""""""""""""""Providers for WalletCreditHistory sheet"""""""""""""""""""""""""""""""""""""""""""""""
+
+workSheetWalletCreditHistory = sh.worksheet(Constants.WalletCreditHistorySheetName)
+
+
+def AddWalletCreditRecord(walletRecord: WalletRecord):
+    if walletRecord.CustomerId > 0:
+        workSheetWalletCreditHistory.append_row(
+            [walletRecord.CustomerId, walletRecord.CreditedAmount, walletRecord.CreditedAt, walletRecord.ValidUntil, walletRecord.Comment]
+        )

@@ -17,8 +17,15 @@ def IsValidPhoneNumber(phone_number) -> bool:
     return bool(re.match(pattern, phone_number))
 
 def IsValidEmail(email) -> bool:
-    pattern = r"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$"
+    pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     return bool(re.match(pattern, email))
 
 def IsStringEmptyOrWhiteSpace(input_string) -> bool:
     return input_string is None or input_string.strip() == ""
+
+def IsBillNotValid(amount: str) -> bool:
+    try:
+        float(amount)
+        return False
+    except ValueError:
+        return True

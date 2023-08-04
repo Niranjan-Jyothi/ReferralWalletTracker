@@ -16,7 +16,7 @@ customer = None
 
 
 def DeleteCustomer():
-    if customer is not None and customerRowId > 0:
+    if customer is not None and customerRowId > 2: #Prevent admin and header deletion
         CustomerRecordService.DeleteCustomerByRowId(customerRowId)
 
 searchQuery = st.text_input("Enter Customer PhoneNumber/Email")

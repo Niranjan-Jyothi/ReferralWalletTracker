@@ -34,12 +34,11 @@ def RedeemAmount(amountToRedeem):
 def RenderRedeemOptions():
     inputColumn, confirmButtonColumn = st.columns([1,1])
     AmountToRedeem = 0
-    RedeemConfirm = None
 
     with inputColumn:
         AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value=0)
     with confirmButtonColumn:  
-        RedeemConfirm = st.sidebar.button("Redeem Now", on_click = RedeemAmount, args = (AmountToRedeem, ))
+        st.sidebar.button("Redeem Now", on_click = RedeemAmount, args = (AmountToRedeem, ))
 
 def ShowRedeemOptions():
     st.session_state.ShowRedeemOptionOnUI = True

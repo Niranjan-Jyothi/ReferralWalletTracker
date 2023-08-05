@@ -71,7 +71,7 @@ def RegisterCustomer():
                 referrerCurrentWalletAmount = float(record[Constants.CustomerRecordColumnNameWallet])
                 referrerName = record[Constants.CustomerRecordColumnNameName]
                 referrerCustomerId = record[Constants.CustomerRecordColumnNameId]
-       
+
         if customer.Referrer is not None and customer.Referrer.strip() is not "" and referrerFound is not True:
             st.sidebar.error(f"Provided Referrer does not exist.")
             errors += 1

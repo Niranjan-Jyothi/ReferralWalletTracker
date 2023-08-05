@@ -21,7 +21,7 @@ def DeleteCustomerByRowId(row : int):
     if row > 2:
         CustomerProvider.DeleteCustomerByRowId(row)
 
-def CreditCustomerWallet(amount: int, customerRowId: int):
+def UpdateCustomerWallet(amount: int, customerRowId: int):
     if customerRowId > 1:
         CustomerProvider.UpdateCustomerWallet(
             amount,

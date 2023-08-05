@@ -92,11 +92,11 @@ def RegisterCustomer():
                 referrerTotalWallet = referrerCurrentWalletAmount + creditAmountToReferrer
                 
                 #Credit the referrer's wallet
-                CustomerRecordService.CreditCustomerWallet(referrerTotalWallet, referrerRowId)
+                CustomerRecordService.UpdateCustomerWallet(referrerTotalWallet, referrerRowId)
                 st.sidebar.success(f"Referrer {referrerName}'s wallet credited! 🥳")  
 
                 #Track the Credit to referrer's wallet with its validity
-                WalletTransactionService.AddWalletRecordHistoryRecord(creditAmountToReferrer, referrerCustomerId)
+                WalletTransactionService.AddWalletCreditRecord(creditAmountToReferrer, referrerCustomerId)
 
 
 

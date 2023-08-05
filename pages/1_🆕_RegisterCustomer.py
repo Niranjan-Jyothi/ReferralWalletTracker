@@ -46,7 +46,7 @@ def RegisterCustomer():
         referrerFound = False
         referrerRowId = 0
         referrerCurrentWalletAmount = 0
-        referrerId = 0
+        referrerCustomerId = None
 
         #1. Validate the uniqueness of Customer PhoneNumber, Email
         #2. Validate if given Referrer exist
@@ -70,7 +70,7 @@ def RegisterCustomer():
                 referrerRowId = rowId
                 referrerCurrentWalletAmount = float(record[Constants.CustomerRecordColumnNameWallet])
                 referrerName = record[Constants.CustomerRecordColumnNameName]
-                referrerId = record[Constants.CustomerRecordColumnNameId]
+                referrerCustomerId = record[Constants.CustomerRecordColumnNameId]
        
         if customer.Referrer is not None and customer.Referrer.strip() is not "" and referrerFound is not True:
             st.sidebar.error(f"Provided Referrer does not exist.")
@@ -78,6 +78,8 @@ def RegisterCustomer():
 
         if errors == 0:
             customer.Id = highestCustomerId + 1
+            customer.Referrer = referrerCustomerId #We store the referrer's Id instead of their Phone/Email for optimization
+
             CustomerRecordService.AddCustomerRecord(customer)
             st.sidebar.success(f"{Name} Registered! 😎")  
 
@@ -94,7 +96,7 @@ def RegisterCustomer():
                 st.sidebar.success(f"Referrer {referrerName}'s wallet credited! 🥳")  
 
                 #Track the Credit to referrer's wallet with its validity
-                WalletTransactionService.AddWalletRecordHistoryRecord(creditAmountToReferrer, referrerId)
+                WalletTransactionService.AddWalletRecordHistoryRecord(creditAmountToReferrer, referrerCustomerId)
 
 
 

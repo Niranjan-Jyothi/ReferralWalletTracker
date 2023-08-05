@@ -3,7 +3,7 @@ import Constants
 from Models.Customer import Customer as Customer
 from datetime import datetime
 from Utils.CommonValidators import *
-from Services import CustomerRecordService, WalletCreditHistory
+from Services import CustomerRecordService, WalletTransactionService
 
 st.title("Register new Customer!")
 
@@ -34,7 +34,7 @@ def ValidateCustomerFormData() -> bool:
     
     return True if errors <= 0 else False
 
-def RegisterCustomer(): 
+def RegisterCustomer():
     if ValidateCustomerFormData():
 
         customer = Customer(
@@ -71,7 +71,7 @@ def RegisterCustomer():
                 referrerCurrentWalletAmount = float(record[Constants.CustomerRecordColumnNameWallet])
                 referrerName = record[Constants.CustomerRecordColumnNameName]
                 referrerId = record[Constants.CustomerRecordColumnNameId]
-        
+       
         if customer.Referrer is not None and customer.Referrer.strip() is not "" and referrerFound is not True:
             st.sidebar.error(f"Provided Referrer does not exist.")
             errors += 1
@@ -94,7 +94,7 @@ def RegisterCustomer():
                 st.sidebar.success(f"Referrer {referrerName}'s wallet credited! 🥳")  
 
                 #Track the Credit to referrer's wallet with its validity
-                WalletCreditHistory.AddWalletRecordHistoryRecord(creditAmountToReferrer, referrerId)
+                WalletTransactionService.AddWalletRecordHistoryRecord(creditAmountToReferrer, referrerId)
 
 
 

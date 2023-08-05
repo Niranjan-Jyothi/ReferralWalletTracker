@@ -1,5 +1,5 @@
 from Models.Customer import Customer
-from Models.WalletRecord import WalletRecord
+from Models.WalletTransaction import WalletTransaction
 from google.oauth2 import service_account
 import streamlit as st
 from gspread_pandas import Client
@@ -65,8 +65,8 @@ def UpdateCustomerWallet(amount: int, row: int, column: int):
 workSheetWalletCreditHistory = sh.worksheet(Constants.WalletCreditHistorySheetName)
 
 
-def AddWalletCreditRecord(walletRecord: WalletRecord):
+def AddWalletTransaction(walletRecord: WalletTransaction):
     if walletRecord.CustomerId > 0:
         workSheetWalletCreditHistory.append_row(
-            [walletRecord.CustomerId, walletRecord.CreditedAmount, walletRecord.CreditedAt, walletRecord.ValidUntil, walletRecord.Comment]
+            [walletRecord.CustomerId, walletRecord.Amount, walletRecord.TransactionType, walletRecord.TransactedAt, walletRecord.ValidUntil, walletRecord.Comment]
         )

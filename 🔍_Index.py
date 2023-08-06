@@ -6,7 +6,7 @@ from datetime import datetime
 import Constants
 
 st.set_page_config(
-    page_title="Offer Tacker",
+    page_title="Pink Passion",
     page_icon="👋",
 )
 
@@ -16,6 +16,7 @@ st.title("Search Customer")
 def RedeemAmount(amountToRedeem):
     if amountToRedeem <= 0:
         st.sidebar.error("Please enter a valid amount to redeem")
+
     else:    
         (customer, customerRowId) = GetCachedCustomerBySearchQuery(st.session_state['SearchQuery'])
         customerCurrentWallet = float(customer[3])
@@ -31,14 +32,21 @@ def RedeemAmount(amountToRedeem):
             st.sidebar.success("Amount debited.")
             st.warning(f"Will take around 1 minute to reflect.")
 
-def RenderRedeemOptions():
-    inputColumn, confirmButtonColumn = st.columns([1,1])
+def RenderRedeemOptionsOnUI():
     AmountToRedeem = 0
+    (customer, _) = GetCachedCustomerBySearchQuery(st.session_state['SearchQuery'])
 
-    with inputColumn:
-        AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value=0)
-    with confirmButtonColumn:  
-        st.sidebar.button("Redeem Now", on_click = RedeemAmount, args = (AmountToRedeem, ))
+    AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value = int(customer[3]))
+    #Disable the Number input "+" and "-" steppers from UI given by default from streamlit.
+    st.markdown("""
+                <style>
+                    button.step-up {display: none;}
+                    button.step-down {display: none;}
+                    div[data-baseweb] {border-radius: 4px;}
+                </style>""",
+                unsafe_allow_html=True)
+
+    st.sidebar.button("Redeem Now", on_click = RedeemAmount, args = (AmountToRedeem, ))
 
 def ShowRedeemOptions():
     st.session_state.ShowRedeemOptionOnUI = True
@@ -73,32 +81,39 @@ def DeleteCustomer(customerRowId, customerName):
 def SearchAndRenderCustomerOnScreen(searchQuery, newSearch = True):
     st.session_state.SearchQuery = searchQuery
     
+    #New search request given - Clear redeem options
     if newSearch:
         st.session_state.ShowRedeemOptionOnUI = False
+
+    #When the function is invoked by streamlit auto refresh, we render redeem options if it was enabled in first place
     elif st.session_state.ShowRedeemOptionOnUI:
-        RenderRedeemOptions()
+        RenderRedeemOptionsOnUI()
         
     #Accept input and Validate it
     if searchQuery and Validator.IdentifyPhoneNumberOrEmail_AndValidate_AndThrow(searchQuery, "Customer"):
 
         (customer, customerRowId) = GetCachedCustomerBySearchQuery(searchQuery)
+        
         if customer is not None:
             # st.write(customer)
-            Name = st.text_input(label = "Customer name", value = customer[1])
-            PhoneNumber = st.text_input(label = f"{customer[1]}'s Phone number", value = customer[4])
-            Email = st.text_input(label = f"{customer[1]}'s email", value = customer[5])
-            SpecialOccasion = st.date_input(label = f"{customer[1]}'s special occasion", value = datetime.strptime(customer[7], Constants.DateTimeFormat))
+            st.text_input(label = "Customer name", value = customer[1], disabled=True)
+            st.text_input(label = f"{customer[1]}'s Phone number", value = customer[4], disabled=True)
+            st.text_input(label = f"{customer[1]}'s email", value = customer[5], disabled=True)
+            st.date_input(label = f"{customer[1]}'s special occasion", value = datetime.strptime(customer[7], Constants.DateTimeFormat), disabled=True)
             # Gender = st.selectbox("Provide the Customer gender", ("Male", "Female", "Others"), value = ??)
             
+            #To display Wallet and Redeem button side-to-side
             WalletColumn, RedeemButtonColumn = st.columns([1,1])
+            
             with WalletColumn:
-                st.text_input(f"{customer[1]}'s Wallet balance", value = customer[3])
+                st.text_input(f"{customer[1]}'s Wallet balance", value = customer[3], disabled=True)
+
             with RedeemButtonColumn:
                 st.write("")
                 st.write("")
                 st.button(
                     label = "Redeem", 
-                    disabled = customer[3] is None or float(customer[3]) <= 0, 
+                    disabled = customer[3] is None or float(customer[3]) <= 0, #Disable Redeem button if Wallet balance is Zero
                     on_click = ShowRedeemOptions)
             
             st.button(label = "Update Customer Record", disabled = True)
@@ -114,11 +129,11 @@ with st.form(key = "SearchCustomerForm", clear_on_submit = True):
     SearchQueryInput = st.text_input("Enter Customer PhoneNumber/Email")
     SearchCustomerButton = st.form_submit_button("Search 🔍")
 
+#New Search request given 
 if SearchCustomerButton:
-    """Triggered when search for a customer is given
-    """
     SearchAndRenderCustomerOnScreen(SearchQueryInput)
 
+#Condition when page auto refreshes due to widget interaction
 elif st.session_state.SearchQuery is not None:
     SearchAndRenderCustomerOnScreen(st.session_state.SearchQuery, False)
 

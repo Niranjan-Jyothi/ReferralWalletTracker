@@ -77,7 +77,7 @@ def RegisterCustomer():
             errors += 1
 
         if errors == 0:
-            customer.Id = highestCustomerId + 1
+            customer.Id = highestCustomerId + 1  #New customer ID
             customer.Referrer = referrerCustomerId #We store the referrer's Id instead of their Phone/Email for optimization
 
             CustomerRecordService.AddCustomerRecord(customer)

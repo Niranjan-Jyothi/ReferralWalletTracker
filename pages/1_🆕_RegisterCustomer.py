@@ -100,7 +100,6 @@ def RegisterCustomer():
 
 
 
-
 #UI Form to accept Customer Data
 with st.form(key = Constants.CustomerRegisterFormKey):
     Name = st.text_input(label = "Enter the Customer name")

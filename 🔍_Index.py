@@ -10,6 +10,7 @@ import Services.CustomerRecordService as CustomerRecordService
 import Services.WalletTransactionService as WalletTransactionService
 from datetime import datetime
 import Constants
+from UIComponents.IndexNavigationCard import ShowNavigationCardsOnUI 
 
 st.title("Search Customer")
 
@@ -137,5 +138,7 @@ if SearchCustomerButton:
 #Condition when page auto refreshes due to widget interaction
 elif st.session_state.SearchQuery is not None:
     SearchAndRenderCustomerOnScreen(st.session_state.SearchQuery, False)
+
+ShowNavigationCardsOnUI()
 
 

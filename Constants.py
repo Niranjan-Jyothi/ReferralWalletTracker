@@ -18,4 +18,7 @@ DefaultReferrerBonus = 0.1 #10%
 DefaultJoiningBonus = 0.05 #5%
 DefaultSeasonalBonus = 0.1 #10%
 
+ReferrerBonusKey = "ReferrerBonus"
+
 DefaultCreditAmountValidity = 60 #In days
+CreditAmountValidityKey = "CreditAmountValidity"

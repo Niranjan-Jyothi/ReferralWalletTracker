@@ -92,7 +92,7 @@ def RegisterCustomer():
             st.success(f"{Name} saved {customerSavings}", icon = "🔥")
 
             if referrerFound:
-                #Do discount calculations
+                #Calculate earnings for referrer. (NOTE: Referrer bonus is calculated on customer bill before Discount)
                 creditAmountToReferrer = Constants.DefaultReferrerBonus * float(BillAmount)
                 referrerTotalWallet = referrerCurrentWalletAmount + creditAmountToReferrer
                 

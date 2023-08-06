@@ -34,13 +34,17 @@ def ValidateCustomerFormData() -> bool:
     
     return True if errors <= 0 else False
 
+@st.cache_data(ttl=120, max_entries=2, show_spinner= "Validating Customer..")
+def GetAllCachedCustomerRecords():
+    return CustomerRecordService.GetAllCustomerRecord()
+
 def RegisterCustomer():
     if ValidateCustomerFormData():
 
         customer = Customer(
             Name, PhoneNumber, Email, SpecialOccasion, Gender, 0, Referrer
         )
-        allCustomerRecords = CustomerRecordService.GetAllCustomerRecord()
+        allCustomerRecords = GetAllCachedCustomerRecords()
         highestCustomerId = 0
         errors = 0
         referrerFound = False
@@ -82,6 +86,7 @@ def RegisterCustomer():
 
             CustomerRecordService.AddCustomerRecord(customer)
             st.sidebar.success(f"{Name} Registered! 😎")  
+            GetAllCachedCustomerRecords.clear()
 
             customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus)
             st.success(f"{Name} saved {customerSavings}", icon = "🔥")

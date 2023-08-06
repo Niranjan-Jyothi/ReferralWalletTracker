@@ -1,14 +1,15 @@
 import streamlit as st
-import Utils.CommonValidators as Validator
-import Services.CustomerRecordService as CustomerRecordService
-import Services.WalletTransactionService as WalletTransactionService
-from datetime import datetime
-import Constants
 
 st.set_page_config(
     page_title="Pink Passion",
     page_icon="👋",
 )
+
+import Utils.CommonValidators as Validator
+import Services.CustomerRecordService as CustomerRecordService
+import Services.WalletTransactionService as WalletTransactionService
+from datetime import datetime
+import Constants
 
 st.title("Search Customer")
 
@@ -30,13 +31,13 @@ def RedeemAmount(amountToRedeem):
             CustomerRecordService.UpdateCustomerWallet(newBalance, customerRowId)
             WalletTransactionService.AddWalletDebitRecord(amountToRedeem, customerId)
             st.sidebar.success("Amount debited.")
-            st.warning(f"Will take around 1 minute to reflect.")
+            GetCachedCustomerBySearchQuery.clear() #Only clearing the get customer by search query cache
 
 def RenderRedeemOptionsOnUI():
     AmountToRedeem = 0
     (customer, _) = GetCachedCustomerBySearchQuery(st.session_state['SearchQuery'])
 
-    AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value = int(customer[3]))
+    AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value = float(customer[3]))
     #Disable the Number input "+" and "-" steppers from UI given by default from streamlit.
     st.markdown("""
                 <style>
@@ -76,7 +77,7 @@ def DeleteCustomer(customerRowId, customerName):
         CustomerRecordService.DeleteCustomerByRowId(customerRowId)
         SearchAndRenderCustomerOnScreen("")
         st.toast(f"Customer {customerName} deleted")
-        st.warning(f"Will take around 1 minute to reflect.")
+        st.cache_data.clear() #Deleting entire cache as total list of customers may be cached in some other page, and a delete of customer has to be reflected there as well.
 
 def SearchAndRenderCustomerOnScreen(searchQuery, newSearch = True):
     st.session_state.SearchQuery = searchQuery

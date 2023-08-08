@@ -22,3 +22,10 @@ ReferrerBonusKey = "ReferrerBonus"
 
 DefaultCreditAmountValidity = 60 #In days
 CreditAmountValidityKey = "CreditAmountValidity"
+
+Secrets_ValidCredentialsKey = "PermittedCredentials"
+Secrets_UserAuthCookieConfig = "UserAuthCookieConfig"
+Secrets_GoogleApiKey = "gcp_service_account"
+Secrets_CookieName = "CookieName"
+Secrets_SignatureKey = "SignatureKey"
+Secrets_CookieExpiration = "CookieExpiration"

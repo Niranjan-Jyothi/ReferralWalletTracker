@@ -10,7 +10,7 @@ def GetDatabaseClient():
             'https://www.googleapis.com/auth/drive']
 
     credentials = service_account.Credentials.from_service_account_info(
-                    st.secrets["gcp_service_account"], scopes = scope)
+                    st.secrets[Constants.Secrets_GoogleApiKey], scopes = scope)
 
     client = Client(scope=scope,creds=credentials)
 

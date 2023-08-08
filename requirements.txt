@@ -2,6 +2,7 @@ altair==5.0.1
 apsw==3.42.0.1
 attrs==23.1.0
 backports.zoneinfo==0.2.1
+bcrypt==4.0.1
 blinker==1.6.2
 cachetools==5.3.1
 certifi==2023.7.22
@@ -11,6 +12,7 @@ colorama==0.4.6
 contourpy==1.1.0
 cycler==0.11.0
 decorator==5.1.1
+extra-streamlit-components==0.1.56
 Faker==19.2.0
 favicon==0.7.0
 fonttools==4.42.0
@@ -55,6 +57,7 @@ pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pydeck==0.8.0
 Pygments==2.15.1
+PyJWT==2.8.0
 pymdown-extensions==10.1
 Pympler==1.0.1
 pyparsing==3.0.9
@@ -74,6 +77,7 @@ soupsieve==2.4.1
 SQLAlchemy==2.0.19
 st-annotated-text==4.0.0
 streamlit==1.25.0
+streamlit-authenticator==0.2.2
 streamlit-camera-input-live==0.2.0
 streamlit-card==0.0.61
 streamlit-embedcode==0.1.2

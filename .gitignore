@@ -7,7 +7,6 @@ __pycache__/
 *.so
 
 #StreamLit
-.streamlit
 .streamlit/secrets.toml
 WorkingTemp
 testprovider.py

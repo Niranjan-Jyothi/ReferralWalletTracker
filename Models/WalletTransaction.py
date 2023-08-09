@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 import Constants
+import Services.SettingsService as SettingsService
 
 class WalletTransaction():
     """ A class representing a Wallet Transaction record.. 
@@ -15,4 +16,7 @@ class WalletTransaction():
         self.Comment = comment
 
     def GetCreditedAmountValidity(self) -> date:
-        return (date.today() + timedelta(days=Constants.DefaultCreditAmountValidity)).strftime(Constants.DateTimeFormat)
+        settings = SettingsService.FetchSettings()
+        
+        return (date.today() + timedelta(days = settings.CreditedAmountValidity)).strftime(Constants.DateTimeFormat)
+    

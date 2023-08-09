@@ -6,6 +6,7 @@ DateTimeFormat = '%d/%m/%Y'
 GoogleSheetDbName = "CustomerDB"
 CustomerSpreadSheetName = "Customer"
 WalletCreditHistorySheetName = "WalletTransaction"
+SettingsSheetName = "Settings"
 
 #Google sheet Column Number mapping
 CustomerRecordColumnNumber_Id = 1
@@ -28,6 +29,15 @@ CustomerRecordColumnNameId = "Id"
 CustomerRecordColumnNameSpecialOccasionType = "SpecialOccasionType"
 CustomerRecordColumnNameSpecialOccasion = "SpecialOccasion"
 
+#Google sheet Column Name Mapping for Settings Sheet
+SettingCreditedAmountValidityValueCell = 'C2'
+SettingReferralBonusPercentageValueCell = 'C3'
+SettingsValueColumnName = "SettingsValue"
+
+#Google sheet Column Number Mapping for Settings Sheet
+CreditedAmountValidityRowNumber = 2
+ReferralBonusPercentageRowNumber = 3
+
 #Secrets Keys
 Secrets_ValidCredentialsKey = "PermittedCredentials"
 Secrets_UserAuthCookieConfig = "UserAuthCookieConfig"
@@ -37,11 +47,9 @@ Secrets_SignatureKey = "SignatureKey"
 Secrets_CookieExpiration = "CookieExpiration"
 
 #Settings
-DefaultReferrerBonus = 0.1 #10%
-DefaultJoiningBonus = 0.05 #5%
-DefaultSeasonalBonus = 0.1 #10%
-
-ReferrerBonusKey = "ReferrerBonus"
+DefaultJoiningBonus = 0.05 #5%   ----------- Not used
+DefaultSeasonalBonus = 0.1 #10%  ----------- Not used
 
 DefaultCreditAmountValidity = 60 #In days
-CreditAmountValidityKey = "CreditAmountValidity"
+DefaultReferrerBonus = 0.1 #10%
+

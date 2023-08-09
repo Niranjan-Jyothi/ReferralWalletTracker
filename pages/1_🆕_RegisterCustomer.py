@@ -7,7 +7,7 @@ if IsUserAuthenticated():
     from Models.Customer import Customer as Customer
     from datetime import datetime
     from Utils.CommonValidators import *
-    from Services import CustomerRecordService, WalletTransactionService
+    from Services import CustomerRecordService, WalletTransactionService, SettingsService
 
     st.title("Register new Customer!")
 
@@ -93,12 +93,13 @@ if IsUserAuthenticated():
                 GetAllCachedCustomerRecords.clear()
 
                 #Show customer savings or Credit Customer wallet with joining Credits here..
-                # customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus)
+                # customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus__Change)
                 # st.success(f"{Name} saved {customerSavings}", icon = "🔥")
 
                 if referrerFound:
                     #Calculate earnings for referrer. (NOTE: Referrer bonus is calculated on customer bill before Discount)
-                    creditAmountToReferrer = Constants.DefaultReferrerBonus * float(BillAmount)
+                    referrerBonus = SettingsService.FetchSettings().ReferralBonusPercentage/100
+                    creditAmountToReferrer = referrerBonus * float(BillAmount)
                     referrerTotalWallet = referrerCurrentWalletAmount + creditAmountToReferrer
                     
                     #Credit the referrer's wallet

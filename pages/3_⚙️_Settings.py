@@ -1,22 +1,23 @@
-import streamlit as st
 from UIComponents.LoginPage import IsUserAuthenticated
 
 if IsUserAuthenticated():
-    import Constants
 
-    st.title("Settings ⚙️")
+    import streamlit as st
+    import Services.SettingsService as SettingsService
 
-    if Constants.CreditAmountValidityKey not in st.session_state:
-        st.session_state[Constants.CreditAmountValidityKey] = Constants.DefaultCreditAmountValidity
+    st.title("Settings ⚙️")    
 
-    def ApplyNewSettings():
-        st.session_state[Constants.CreditAmountValidityKey] = int(newCreditValidityDays)
-        st.success("Settings Applied")
-        st.warning("Applied changes only apply to this session! They will be restored to default later on.")
+    FetchedSettings = SettingsService.FetchSettings()
 
     with st.form(key = "ChangeSettingsForm"):
-        newCreditValidityDays = st.number_input(label="Credit amount Validity (in DAYS)", value=st.session_state[Constants.CreditAmountValidityKey], min_value=10, max_value=200)
+        newCreditValidityDays = st.number_input(label="Credit amount Validity (in DAYS)", value=FetchedSettings.CreditedAmountValidity, min_value=10, max_value=300)
+        newReferrerBonus = st.number_input(label="Referrer Bonus (in %)", value=FetchedSettings.ReferralBonusPercentage, min_value=0.0, max_value=100.0, step=0.5)
         submitButton = st.form_submit_button(label="Apply Settings")
 
     if submitButton:
-        ApplyNewSettings()
+        SettingsService.UpdateSettingValues(  # Update values
+            newCreditValidityDays,   
+            newReferrerBonus
+        )
+        SettingsService.FetchSettings.clear() # Clear cache
+        st.success("Settings Applied")

@@ -11,7 +11,7 @@ if IsUserAuthenticated():
     from pandas import DataFrame
     
     st.title("Insights💡")
-    st.warning("This is just a preview. Feature is under development.")
+    st.warning("This is just the start. Feature is still under development.")
 
     dataframe = GetAllCachedCustomersAsDataFrame()
     filtered_df = dataframe_explorer(dataframe, case=False) # Filter is using Streamlit magic

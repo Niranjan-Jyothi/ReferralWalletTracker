@@ -22,7 +22,7 @@ def GetDatabaseClient():
 @st.cache_resource(show_spinner = "Loading tables..")
 def GetSheetHandle(sheetName: str):
 
-    if sheetName not in [Constants.CustomerSpreadSheetName, Constants.WalletCreditHistorySheetName]:
+    if sheetName not in [Constants.CustomerSpreadSheetName, Constants.WalletCreditHistorySheetName, Constants.SettingsSheetName]:
         st.error("Invalid sheet name!")
         return None
     

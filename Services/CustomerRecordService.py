@@ -10,6 +10,8 @@ def GetSafeFromList(list, index):
     except IndexError:
         return None
 
+#NOTE: There is a bug here, as Registered date will be set internally as DateTime.Now() and this will affect and override the fetched Customer Data. 
+#NOTE: Solution- Need to accept Registered at also as an input. Not in priority as this data is currently not being used or shown back in UI
 def ToCustomer(record):
     """Converts the Fetched Google sheet record row into Customer Object
 

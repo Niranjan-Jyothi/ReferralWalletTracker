@@ -1,24 +1,13 @@
 from Models.Customer import Customer
-import streamlit as st
-from pandas import DataFrame
 import Constants
-import pyparsing
 from Providers.DataBaseConnection import GetSheetHandle
 # from gspread_pandas import Spread
 
 
 customerRecordSheetHandler = GetSheetHandle(Constants.CustomerSpreadSheetName)
 
-def LoadAndShowDb():
-    df = DataFrame(customerRecordSheetHandler.get_all_records())
-    st.write(df)
-
-#LoadAndShowDb()
-
 def AddCustomerRecord(customer: Customer):
-    # nextItemId = len(workSheet.col_values(1))
     customerRecordSheetHandler.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.Referrer])
-    #LoadAndShowDb()
 
 def GetAllCustomerRecord():
     return customerRecordSheetHandler.get_all_records()

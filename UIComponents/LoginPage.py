@@ -26,10 +26,10 @@ credentials = {
 
 @st.cache_resource(show_spinner = "Signing in..", experimental_allow_widgets=True)
 def GetAuthenticator():
-    return stauth.Authenticate(credentials, CookieName, SignatureKey, CookieExpiration) #Expiry of 10 Days
+    return stauth.Authenticate(credentials, CookieName, SignatureKey, CookieExpiration)
 
 def RenderLoginComponent() -> bool:
-    authenticator = GetAuthenticator()
+    authenticator = stauth.Authenticate(credentials, CookieName, SignatureKey, CookieExpiration)
     name, authentication_status, username = authenticator.login('Login', 'main')
     
     if authentication_status:

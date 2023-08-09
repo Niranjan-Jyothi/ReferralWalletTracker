@@ -7,13 +7,13 @@ from Providers.DataBaseConnection import GetSheetHandle
 customerRecordSheetHandler = GetSheetHandle(Constants.CustomerSpreadSheetName)
 
 def AddCustomerRecord(customer: Customer):
-    customerRecordSheetHandler.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.Referrer])
+    customerRecordSheetHandler.append_row([customer.Id, customer.Name, customer.Gender, customer.Wallet, customer.PhoneNumber, customer.Email, customer.RegisteredAt, customer.SpecialOccasion, customer.SpecialOccasionType, customer.Referrer])
 
 def GetAllCustomerRecord():
     return customerRecordSheetHandler.get_all_records()
 
 #Hard matches an item on the entire sheet and returns the row in which it is found
-def FindCustomerIdByItem(searchItem: str) -> int:
+def FindCustomerRowIdByItem(searchItem: str) -> int:
     cell = customerRecordSheetHandler.find(searchItem)
     return -1 if cell is None else cell.row
 
@@ -27,5 +27,5 @@ def DeleteCustomerByRowId(row: int):
         customerRecordSheetHandler.delete_row(row)
 
 def UpdateCustomerWallet(amount: int, row: int, column: int):
-    if row > 1 and column == Constants.CustomerRecordColumnNumberWallet:
+    if row > 1 and column == Constants.CustomerRecordColumnNumber_Wallet:
         customerRecordSheetHandler.update_cell(row, column, amount)

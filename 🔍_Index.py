@@ -1,4 +1,5 @@
 import streamlit as st
+from Models.Customer import Customer
 
 st.set_page_config(
     page_title="Pink Passion",
@@ -23,8 +24,8 @@ if IsUserAuthenticated():
 
         else:    
             (customer, customerRowId) = GetCachedCustomerBySearchQuery(st.session_state['SearchQuery'])
-            customerCurrentWallet = float(customer[3])
-            customerId = int(customer[0])
+            customerCurrentWallet = float(getattr(customer, Constants.CustomerRecordColumnNameWallet))
+            customerId = int(getattr(customer, Constants.CustomerRecordColumnNameId))
             newBalance = int((float)(customerCurrentWallet - amountToRedeem))
             
             if newBalance < 0:
@@ -40,7 +41,8 @@ if IsUserAuthenticated():
         AmountToRedeem = 0
         (customer, _) = GetCachedCustomerBySearchQuery(st.session_state['SearchQuery'])
 
-        AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value = float(customer[3]))
+        AmountToRedeem = st.sidebar.number_input("Amount to Redeem", value = float(getattr(customer, Constants.CustomerRecordColumnNameWallet)))
+        
         #Disable the Number input "+" and "-" steppers from UI given by default from streamlit.
         st.markdown("""
                     <style>
@@ -65,7 +67,7 @@ if IsUserAuthenticated():
 
 
     @st.cache_data(ttl=60, max_entries=2, show_spinner= "Finding Customer..")
-    def GetCachedCustomerBySearchQuery(searchQueryCached):
+    def GetCachedCustomerBySearchQuery(searchQueryCached) -> (Customer, int):
         return CustomerRecordService.FindCustomerAndRowId_ByItem(searchQueryCached)
 
 
@@ -99,29 +101,29 @@ if IsUserAuthenticated():
             (customer, customerRowId) = GetCachedCustomerBySearchQuery(searchQuery)
             
             if customer is not None:
-                # st.write(customer)
-                st.text_input(label = "Customer name", value = customer[1], disabled=True)
-                st.text_input(label = f"{customer[1]}'s Phone number", value = customer[4], disabled=True)
-                st.text_input(label = f"{customer[1]}'s email", value = customer[5], disabled=True)
-                st.date_input(label = f"{customer[1]}'s special occasion", value = datetime.strptime(customer[7], Constants.DateTimeFormat), disabled=True)
+                st.text_input(label = "Customer name", value = getattr(customer, Constants.CustomerRecordColumnNameName), disabled=True)
+                st.text_input(label = f"{getattr(customer, Constants.CustomerRecordColumnNameName)}'s Phone number", value = getattr(customer, Constants.CustomerRecordColumnNamePhoneNumber), disabled=True)
+                st.text_input(label = f"{getattr(customer, Constants.CustomerRecordColumnNameName)}'s email", value = getattr(customer, Constants.CustomerRecordColumnNameEmail), disabled=True)
+                st.date_input(label = f"{getattr(customer, Constants.CustomerRecordColumnNameName)}'s special occasion", value = datetime.strptime(getattr(customer, Constants.CustomerRecordColumnNameSpecialOccasion), Constants.DateTimeFormat), disabled=True)
+                st.text_input(label = f"{getattr(customer, Constants.CustomerRecordColumnNameName)}'s special occasion type", value = getattr(customer, Constants.CustomerRecordColumnNameSpecialOccasionType), disabled=True)
                 # Gender = st.selectbox("Provide the Customer gender", ("Male", "Female", "Others"), value = ??)
                 
                 #To display Wallet and Redeem button side-to-side
                 WalletColumn, RedeemButtonColumn = st.columns([1,1])
                 
                 with WalletColumn:
-                    st.text_input(f"{customer[1]}'s Wallet balance", value = customer[3], disabled=True)
+                    st.text_input(f"{getattr(customer, Constants.CustomerRecordColumnNameName)}'s Wallet balance", value = getattr(customer, Constants.CustomerRecordColumnNameWallet), disabled=True)
 
                 with RedeemButtonColumn:
                     st.write("")
                     st.write("")
                     st.button(
                         label = "Redeem", 
-                        disabled = customer[3] is None or float(customer[3]) <= 0, #Disable Redeem button if Wallet balance is Zero
+                        disabled = getattr(customer, Constants.CustomerRecordColumnNameWallet) is None or float(getattr(customer, Constants.CustomerRecordColumnNameWallet)) <= 0, #Disable Redeem button if Wallet balance is Zero
                         on_click = ShowRedeemOptions)
                 
                 st.button(label = "Update Customer Record", disabled = True)
-                st.button(label = "Delete ?", on_click = DeleteCustomer, args=(customerRowId, customer[1]))
+                st.button(label = "Delete ?", on_click = DeleteCustomer, args=(customerRowId, getattr(customer, Constants.CustomerRecordColumnNameName)))
                 # Referrer = st.text_input(label = f"{customer[1]}'s Referrer Id", value = customer[])
             
             else:

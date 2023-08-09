@@ -46,7 +46,7 @@ if IsUserAuthenticated():
         if ValidateCustomerFormData():
 
             customer = Customer(
-                Name, PhoneNumber, Email, SpecialOccasion, Gender, 0, Referrer
+                Name, PhoneNumber, Email, SpecialOccasion, SpecialOccasionType, Gender, 0, Referrer
             )
             allCustomerRecords = GetAllCachedCustomerRecords()
             highestCustomerId = 0
@@ -92,8 +92,9 @@ if IsUserAuthenticated():
                 st.sidebar.success(f"{Name} Registered! 😎")  
                 GetAllCachedCustomerRecords.clear()
 
-                customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus)
-                st.success(f"{Name} saved {customerSavings}", icon = "🔥")
+                #Show customer savings or Credit Customer wallet with joining Credits here..
+                # customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus)
+                # st.success(f"{Name} saved {customerSavings}", icon = "🔥")
 
                 if referrerFound:
                     #Calculate earnings for referrer. (NOTE: Referrer bonus is calculated on customer bill before Discount)
@@ -115,6 +116,7 @@ if IsUserAuthenticated():
         PhoneNumber = st.text_input(label = "Enter the Customer Phone number")
         Email = st.text_input(label = "Enter the Customer email")
         SpecialOccasion = st.date_input(label = "Provide a special occasion for customer", min_value=datetime(1950, 1, 1))
+        SpecialOccasionType = st.selectbox("Whats the special occasion for ?", ("Birthday 🎂", "Anniversary 💑", "Others"))
         Gender = st.selectbox("Provide the Customer gender", ("Male", "Female", "Others"))
         Referrer = st.text_input(label = "Enter the Referrer registered Email OR Phone Number (Optional)")
         BillAmount = st.text_input(label = "Enter current bill due for customer")

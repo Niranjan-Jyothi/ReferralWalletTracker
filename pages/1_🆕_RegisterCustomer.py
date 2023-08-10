@@ -11,12 +11,25 @@ if IsUserAuthenticated():
 
     st.title("Register new Customer!")
 
+    def CalculateJoiningOrReferrerCreditAmount(bonusPercentage, totalAmount) -> float:
+        """Calculates the Joining or Referrer Amount
+
+        Args:
+            bonusPercentage (_type_): Percentage Increase
+            totalAmount (_type_): Total Bill from which percentage is taken for Wallet credit
+
+        Returns:
+            float: Amount to be credited.
+        """
+        bonus = bonusPercentage/100
+        return float(totalAmount) * bonus
+
 
     def ValidateCustomerFormData() -> bool:
         errors = 0
 
         if IsStringEmptyOrWhiteSpace(BillAmount) or IsBillNotValid(BillAmount):
-            st.sidebar.error("Please provide Valid Number for Bill due")
+            st.sidebar.error("Please provide valid Bill Amount.")
             errors+=1
 
         if IsStringEmptyOrWhiteSpace(Name):
@@ -87,27 +100,29 @@ if IsUserAuthenticated():
             if errors == 0:
                 customer.Id = highestCustomerId + 1  #New customer ID
                 customer.Referrer = referrerCustomerId #We store the referrer's Id instead of their Phone/Email for optimization
-
-                CustomerRecordService.AddCustomerRecord(customer)
-                st.sidebar.success(f"{Name} Registered! 😎")  
+                
+                currentSettings_ReferralBonusPercentage = SettingsService.FetchSettings().ReferralBonusPercentage #NOTE: We will use Referral bonus percentage also for newly joined Customer percentage
+                customer.Wallet = CalculateJoiningOrReferrerCreditAmount(currentSettings_ReferralBonusPercentage, BillAmount) # New customer gets joining bonus credited to their wallet.
+                
+                CustomerRecordService.AddCustomerRecord(customer) #NOTE: API 1
+                st.sidebar.success(f"{Name} Registered with a Wallet total of {customer.Wallet}! 😎")  
+                
                 GetAllCachedCustomerRecords.clear()
-
-                #Show customer savings or Credit Customer wallet with joining Credits here..
-                # customerSavings = float(BillAmount) * (Constants.DefaultJoiningBonus + Constants.DefaultReferrerBonus__Change)
-                # st.success(f"{Name} saved {customerSavings}", icon = "🔥")
+                
+                #Track the Credit to just joined customers wallet
+                WalletTransactionService.AddWalletCreditRecord(customer.Wallet, customer.Id, "Credited as Joining bonus") #NOTE: API 2
 
                 if referrerFound:
-                    #Calculate earnings for referrer. (NOTE: Referrer bonus is calculated on customer bill before Discount)
-                    referrerBonus = SettingsService.FetchSettings().ReferralBonusPercentage/100
-                    creditAmountToReferrer = referrerBonus * float(BillAmount)
+                    #Calculate earnings for referrer.
+                    creditAmountToReferrer = CalculateJoiningOrReferrerCreditAmount(currentSettings_ReferralBonusPercentage, BillAmount)
                     referrerTotalWallet = referrerCurrentWalletAmount + creditAmountToReferrer
                     
                     #Credit the referrer's wallet
-                    CustomerRecordService.UpdateCustomerWallet(referrerTotalWallet, referrerRowId)
+                    CustomerRecordService.UpdateCustomerWallet(referrerTotalWallet, referrerRowId) #NOTE: API 3
                     st.sidebar.success(f"Referrer {referrerName}'s wallet credited! 🥳")  
 
                     #Track the Credit to referrer's wallet with its validity
-                    WalletTransactionService.AddWalletCreditRecord(creditAmountToReferrer, referrerCustomerId)
+                    WalletTransactionService.AddWalletCreditRecord(creditAmountToReferrer, referrerCustomerId, "Credited as Referrer bonus") #NOTE: API 4
 
 
 
@@ -120,7 +135,7 @@ if IsUserAuthenticated():
         SpecialOccasionType = st.selectbox("Whats the special occasion for ?", ("Birthday 🎂", "Anniversary 💑", "Others"))
         Gender = st.selectbox("Provide the Customer gender", ("Male", "Female", "Others"))
         Referrer = st.text_input(label = "Enter the Referrer registered Email OR Phone Number (Optional)")
-        BillAmount = st.text_input(label = "Enter current bill due for customer")
+        BillAmount = st.text_input(label = "Enter Bill Amount")
         Submit = st.form_submit_button(label = "Register Customer")
 
     if Submit:

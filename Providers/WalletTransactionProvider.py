@@ -7,5 +7,8 @@ walletTransactionSheetHandler = GetSheetHandle(Constants.WalletCreditHistoryShee
 def AddWalletTransaction(walletRecord: WalletTransaction):
     if walletRecord.CustomerId > 0:
         walletTransactionSheetHandler.append_row(
-            [walletRecord.CustomerId, walletRecord.Amount, walletRecord.TransactionType, walletRecord.TransactedAt, walletRecord.ValidUntil, walletRecord.Comment]
+            [walletRecord.CustomerId, walletRecord.Amount, walletRecord.TransactionType, walletRecord.TransactedAt, walletRecord.ValidUntil, walletRecord.Comment, walletRecord.IsValid]
         )
+
+def GetAllTransactions():
+    return walletTransactionSheetHandler.get_all_records()
